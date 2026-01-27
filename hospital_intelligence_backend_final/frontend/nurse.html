@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nurse Monitor | Hospital OS</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        .digital-readout { font-family: 'Share Tech Mono', monospace; }
+        .monitor-card {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        .monitor-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .critical-flash { animation: flash-red 1s infinite; }
+        @keyframes flash-red {
+            0% { background-color: rgba(239, 68, 68, 0); }
+            50% { background-color: rgba(239, 68, 68, 0.2); }
+            100% { background-color: rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <header>
+            <div class="brand">
+                <i class="fas fa-heartbeat"></i> ICU MONITOR
+                <span id="nurseNameDisplay" style="font-size: 0.8rem; opacity: 0.7; margin-left: 10px;"></span>
+            </div>
+            <button onclick="logout()" class="btn-outline">Logout</button>
+        </header>
+
+        <main class="dashboard-layout">
+            
+            <div class="glass-panel">
+                <div style="padding: 1rem; border-bottom: 1px solid var(--border);">
+                    <h3 style="margin:0; font-size: 1rem;">Active Ward</h3>
+                </div>
+                <div id="patientList" class="patient-list">
+                    </div>
+            </div>
+
+            <div id="patientDetailView" class="glass-panel" style="display: none; position: relative;">
+                
+                <div style="padding: 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+                    <div>
+                        <h1 id="pName" style="margin: 0; font-weight: 300;">--</h1>
+                        <div style="opacity: 0.7; margin-top: 5px; font-size: 0.9rem;">
+                            ID: <span id="pId">--</span> | Dr. <span id="pDoctor">--</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span id="connectionStatus" style="color:var(--success); font-size: 0.8rem;">
+                            <i class="fas fa-circle fa-beat" style="font-size: 8px;"></i> SENSORS ACTIVE
+                        </span>
+                        <div id="alertBox" style="display:none; color: var(--critical); font-weight: bold; margin-top: 5px;">
+                            <i class="fas fa-exclamation-triangle"></i> CRITICAL ALERT SENT
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; align-items: center;">
+                    
+                    <div class="monitor-card">
+                        <span class="monitor-label">Heart Rate (BPM)</span>
+                        <div id="dispHR" class="digital-readout" style="font-size: 3rem; color: #10b981; text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);">--</div>
+                    </div>
+
+                    <div class="monitor-card">
+                        <span class="monitor-label">Blood Pressure</span>
+                        <div id="dispBP" class="digital-readout" style="font-size: 2.5rem; color: #10b981;">--/--</div>
+                    </div>
+
+                    <div class="monitor-card">
+                        <span class="monitor-label">Oxygen (SpO2)</span>
+                        <div id="dispO2" class="digital-readout" style="color: #3b82f6; font-size: 3rem;">--%</div>
+                    </div>
+
+                </div>
+
+                <div style="padding: 0 2rem; margin-top: 0;">
+                    <div class="glass-panel" style="padding: 1.5rem; border: 1px solid var(--border); background: rgba(0,0,0,0.3);">
+                        <h4 style="margin: 0 0 1rem 0; color: #fbbf24; font-size: 1rem; letter-spacing: 1px;">
+                            <i class="fas fa-prescription-bottle-alt"></i> MEDICATION ORDERS
+                        </h4>
+                        <div id="nurseMedList" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="opacity: 0.5;">Waiting for orders...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: absolute; bottom: 2rem; right: 2rem;">
+                    <button onclick="triggerCritical()" class="btn" style="background: #333; border: 1px solid #555;">
+                        <i class="fas fa-biohazard"></i> SIMULATE EMERGENCY
+                    </button>
+                </div>
+
+            </div>
+
+            <div id="emptyState" class="glass-panel" style="justify-content: center; align-items: center; opacity: 0.4;">
+                <div style="text-align: center;">
+                    <i class="fas fa-procedures" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                    <h3>Select Patient to Connect Sensors</h3>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script type="module" src="js/nurse.js"></script>
+    <script>
+        function logout() { localStorage.clear(); window.location.href = 'login.html'; }
+        // Expose function for the button (maps to the function in nurse.js)
+        window.triggerCritical = () => window.triggerCriticalAction(); 
+    </script>
+</body>
+</html>
